@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Mozilla+Headline:wght@200..700&family=Space+Grotesk:wght@300..700&display=swap"
+    rel="stylesheet">
+  <title>Welcome to Adire Apparel</title>
+  <!--[if mso]>
+  <style type="text/css">
+    body, table, td {
+      font-family: Arial, sans-serif !important;
+    }
+  </style>
+  <![endif]-->
+  <style>
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body style="background-color: #fafafb; font-family: 'Space Grotesk', Arial, sans-serif; margin: 0; padding: 24px 0;">
+  <table cellpadding="0" cellspacing="0" width="100%" style="border-spacing: 0;">
+    <tr>
+      <td align="center">
+        <table cellpadding="0" cellspacing="0" width="700"
+          style="background-color: #fff; margin: 0 auto; border-spacing: 0; max-width: 700px; border: 1px solid #dfdfdf; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="padding: 30px 20px; text-align: center;">
+              <img src="[Your Logo URL]" alt="Adire Apparel Logo" style="max-width: 200px; height: auto;">
+            </td>
+          </tr>
+          <!-- Content -->
+          <tr>
+            <td style="padding: 20px 40px;">
+              <h1 style="color: #333; font-size: 24px; margin-bottom: 20px;">Welcome to Adire Apparel!</h1>
+              <p style="font-weight: 500; color: #444; font-size: 16px;">Hi {{.name}},</p>
+              <p style="font-size: 16px; line-height: 1.6; color: #666;">Thank you for joining Adire Apparel. We're
+                excited to have you as part of our community!</p>
+              <div
+                style="background-color: #f5f5f5; padding: 20px; border-radius: 4px; margin: 20px 0; text-align: center;">
+                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Your verification code is:</p>
+                <p style="margin: 0; font-size: 32px; font-weight: 600; color: #333; letter-spacing: 5px;">{{.otp}}</p>
+                <p style="font-size: 12px; color: #999; margin-top: 10px;">This code will expire in 10 minutes</p>
+              </div>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="{{.link}}" class="button" target="_blank"
+                  style="background-color: #4CAF50; color: white; padding: 15px 32px; text-decoration: none; border-radius: 4px; font-weight: 500;">Verify
+                  Email</a>
+              </div>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 30px 20px; background-color: #f8f8f8; border-top: 1px solid #dfdfdf;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-spacing: 0;">
+                <tr>
+                  <td style="text-align: center; padding-bottom: 20px;">
+                    <div style="color: #666; font-size: 14px;">
+                      <p style="margin: 5px 0;">Follow us on social media:</p>
+                      <a href="#" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Facebook</a>
+                      <a href="#" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Twitter</a>
+                      <a href="#" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: center; color: #999; font-size: 12px;">
+                    <p style="margin: 5px 0;">© <span id="date"></span> Adire Apparel. All rights reserved.</p>
+                    <p style="margin: 5px 0;">If you didn't create an account with us, please ignore this email.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <script>
+    document.getElementById("date").innerText = new Date().getFullYear();
+  </script>
+</body>
+
+</html>

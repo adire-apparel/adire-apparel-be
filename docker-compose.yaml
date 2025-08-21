@@ -1,0 +1,42 @@
+services:
+  psql:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: admin
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      retries: 20
+
+  storage:
+    image: fsouza/fake-gcs-server
+    ports:
+      - 4443:4443
+    command: -scheme http -public-host localhost
+    volumes:
+      - storage_data:/storage
+
+  app:
+    image: cosmtrek/air
+    working_dir: /adire-apparel/
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+    volumes:
+      - ./:/adire-apparel/
+    depends_on:
+      psql:
+        condition: service_healthy
+      storage:
+        condition: service_started
+
+networks:
+  db_network:
+volumes:
+  storage_data:
