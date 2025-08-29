@@ -33,6 +33,7 @@ type ProductModel struct {
 	CreatedBy     string         `json:"created_by" gorm:"column:created_by;not null" validate:"required"`
 	CreatedByUser UserModel      `json:"created_by_user" gorm:"foreignKey:CreatedBy;references:Id"`
 	IsDeleted     bool           `json:"is_deleted" gorm:"default:false"`
+	Ratings       []RatingModel  `json:"ratings" gorm:"foreignKey:ProductId"`
 }
 
 type CategoryModel struct {
@@ -64,6 +65,16 @@ type PricingModel struct {
 	Currency           string `json:"currency" gorm:"column:currency;default:NGN"`
 	TaxRate            int    `json:"tax_rate" gorm:"column:tax_rate;default:0"`
 	DiscountPercentage int    `json:"discount_percentage,omitempty" gorm:"column:discount_percentage;default:0"`
+}
+
+type RatingModel struct {
+	BaseModel
+	Rating    string       `json:"rating" gorm:"column:rating"`
+	Comment   string       `json:"comment" gorm:"column:comment"`
+	ProductId string       `json:"product_id" gorm:"column:product_id;not null" validate:"required"`
+	Product   ProductModel `json:"product,omitempty" gorm:"foreignKey:ProductId;references:Id"`
+	UserId    string       `json:"user_id" gorm:"column:user_id;not null" validate:"required"`
+	User      UserModel    `json:"user" gorm:"foreignKey:UserId;references:Id"`
 }
 
 type StringArray []string

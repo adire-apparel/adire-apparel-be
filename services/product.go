@@ -113,21 +113,21 @@ func (s *ProductService) GetProducts(params dto.ProductPagination) (*dto.Paginat
 
 	query := s.database.Model(&models.ProductModel{}).Where("is_deleted = ?", false)
 
-	if params.Name != "" {
-		lowerCaseName := strings.ToLower(params.Name)
-		query = query.Where("name = ?", lowerCaseName)
+	if params.Name != nil && *params.Name != "" {
+		lowerCaseName := strings.ToLower(*params.Name)
+		query = query.Where("LOWER(name) LIKE ?", "%"+lowerCaseName+"%")
 	}
 
-	if params.CategoryId != "" {
-		query = query.Where("category_id = ?", params.CategoryId)
+	if params.CategoryId != nil && *params.CategoryId != "" {
+		query = query.Where("category_id = ?", *params.CategoryId)
 	}
 
-	if params.MinPrice > 0 {
-		query = query.Where("price >= ?", params.MinPrice)
+	if params.MinPrice != nil && *params.MinPrice > 0 {
+		query = query.Where("price >= ?", *params.MinPrice)
 	}
 
-	if params.MaxPrice > 0 {
-		query = query.Where("price <= ?", params.MaxPrice)
+	if params.MaxPrice != nil && *params.MaxPrice > 0 {
+		query = query.Where("price <= ?", *params.MaxPrice)
 	}
 
 	if err := query.Count(&totalItems).Error; err != nil {
@@ -176,7 +176,7 @@ func (s *ProductService) GetProducts(params dto.ProductPagination) (*dto.Paginat
 func (s *ProductService) GetProduct(id string) (*models.ProductModel, error) {
 	var product models.ProductModel
 
-	if err := s.database.Where("id = ?", id).First(&product).Error; err != nil {
+	if err := s.database.Preload("CreatedByUser").Preload("Category").Preload("Variants").Where("id = ?", id).First(&product).Error; err != nil {
 		return nil, ErrProductNotFound
 	}
 

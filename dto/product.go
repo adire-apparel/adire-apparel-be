@@ -6,12 +6,12 @@ import (
 
 type ProductPagination struct {
 	Pagination
-	Name       string  `json:"name"`
-	CategoryId string  `json:"category_id" form:"category_id"`
-	MinPrice   float64 `json:"min_price" form:"min_price"`
-	MaxPrice   float64 `json:"max_price" form:"max_price"`
-	SortBy     string  `json:"sort_by" form:"sort_by"`
-	SortOrder  string  `json:"sort_order" form:"sort_order"`
+	Name       *string  `json:"name"`
+	CategoryId *string  `json:"category_id" form:"category_id"`
+	MinPrice   *float64 `json:"min_price" form:"min_price"`
+	MaxPrice   *float64 `json:"max_price" form:"max_price"`
+	SortBy     *string  `json:"sort_by" form:"sort_by"`
+	SortOrder  *string  `json:"sort_order" form:"sort_order"`
 }
 
 type CreateProductDto struct {

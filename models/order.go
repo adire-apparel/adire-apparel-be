@@ -11,6 +11,7 @@ import (
 type OrderStatus string
 
 const (
+	Draft      OrderStatus = "draft"
 	Pending    OrderStatus = "pending"
 	Processing OrderStatus = "processing"
 	Shipped    OrderStatus = "shipped"
@@ -39,6 +40,7 @@ type OrderModel struct {
 	OrderDate       time.Time        `json:"order_date" gorm:"not null;default:CURRENT_TIMESTAMP"`
 	Status          OrderStatus      `json:"status" gorm:"type:varchar(20);default:pending" validate:"required,oneof=pending processing shipped delivered cancelled"`
 	SubtotalAmount  int              `json:"subtotal_amount" gorm:"not null;check:subtotal_amount >= 0" validate:"required,min=0"`
+	TaxAmount       int              `json:"tax_amount" gorm:"not null;check:tax_amount >= 0" validate:"required,min=0"`
 	TotalAmount     int              `json:"total_amount" gorm:"not null;check:total_amount >= 0" validate:"required,min=0"`
 	ShippingAddress Address          `json:"shipping_address" gorm:"embedded;embeddedPrefix:shipping_"`
 	BillingAddress  Address          `json:"billing_address" gorm:"embedded;embeddedPrefix:billing_"`
@@ -62,7 +64,7 @@ func (o *OrderModel) BeforeCreate(tx *gorm.DB) error {
 		o.OrderDate = time.Now()
 	}
 	if o.Status == "" {
-		o.Status = Pending
+		o.Status = Draft
 	}
 	if o.Currency == "" {
 		o.Currency = "NGN"
@@ -108,6 +110,7 @@ func (o *OrderModel) calculateAmounts() {
 		if item.Price.TaxRate > 0 {
 			tax := (itemSubtotal * item.Price.TaxRate) / 100
 			itemTotal += tax
+			o.TaxAmount = tax
 		}
 
 		total += itemTotal

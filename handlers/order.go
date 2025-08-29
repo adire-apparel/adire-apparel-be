@@ -53,22 +53,42 @@ func (h *OrderHandler) UpdateOrder() gin.HandlerFunc {
 
 func (h *OrderHandler) GetOrders() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var params dto.OrderPagination
+		var params dto.Pagination
 
 		if err := ctx.ShouldBind(&params); err != nil {
 			lib.BadRequest(ctx, err.Error(), "400")
 			return
 		}
 
-		lib.Success(ctx, "Orders retrieved successfully", nil)
+		orders, err := h.service.GetOrders(params)
+
+		if err != nil {
+			lib.InternalServerError(ctx, "Internal server error,"+err.Error())
+			return
+		}
+
+		lib.Success(ctx, "Orders retrieved successfully", orders)
 	}
 }
 
 func (h *OrderHandler) GetOrdersByUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		id := ctx.Param("id")
+		var params dto.Pagination
 
-		lib.Success(ctx, "Orders retrieved successfully", id)
+		if err := ctx.ShouldBind(&params); err != nil {
+			lib.BadRequest(ctx, err.Error(), "400")
+			return
+		}
+
+		id := ctx.Param("id")
+		orders, err := h.service.GetOrdersByUser(id, params)
+
+		if err != nil {
+			lib.InternalServerError(ctx, "Internal server error,"+err.Error())
+			return
+		}
+
+		lib.Success(ctx, "Orders retrieved successfully", orders)
 	}
 }
 

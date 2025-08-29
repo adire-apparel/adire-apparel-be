@@ -11,9 +11,7 @@ import (
 
 type OrderPagination struct {
 	Pagination
-	ProductId       *string `json:"product_id,omitempty"`
-	ShippingAddress *string `json:"shipping_address,omitempty"`
-	BillingAddress  *string `json:"billing_address,omitempty"`
+	Name *string `json:"name,omitempty"`
 }
 
 type AddressDto struct {
@@ -38,12 +36,12 @@ type CreateOrderItemDto struct {
 }
 
 type CreateOrderDto struct {
-	UserId          string               `json:"user_id" validate:"required,uuid"`
 	Items           []CreateOrderItemDto `json:"items" validate:"required,min=1,max=50,dive"`
 	Currency        string               `json:"currency" validate:"len=3"`
-	ShippingAddress AddressDto           `json:"shipping_address" validate:"required"`
-	BillingAddress  AddressDto           `json:"billing_address" validate:"required"`
-	Notes           string               `json:"notes,omitempty" validate:"max=1000"`
+	ShippingAddress *AddressDto          `json:"shipping_address" validate:"required"`
+	BillingAddress  *AddressDto          `json:"billing_address" validate:"required"`
+	UserId          *string              `json:"user_id" validate:"required,uuid"`
+	Notes           *string              `json:"notes,omitempty" validate:"max=1000"`
 }
 
 type UpdateOrderItemDto struct {

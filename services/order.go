@@ -26,10 +26,16 @@ var (
 )
 
 func (s *OrderService) CreateOrder(payload dto.CreateOrderDto) (*models.OrderModel, error) {
+	if len(payload.Items) == 0 {
+		return nil, errors.New("order items are required")
+	}
+
 	payload.SetDefaults()
 
-	if err := s.validateUser(payload.UserId); err != nil {
-		return nil, err
+	if payload.UserId != nil {
+		if err := s.validateUser(*payload.UserId); err != nil {
+			return nil, err
+		}
 	}
 
 	orderItems, err := s.buildOrderItems(payload.Items)
@@ -69,6 +75,15 @@ func (s *OrderService) UpdateOrder(id string, payload dto.UpdateOrderDto) (*mode
 		return nil, err
 	}
 
+	if payload.Status != nil && *payload.Status != "draft" {
+		if payload.ShippingAddress == nil {
+			return nil, errors.New("shipping address is required for order placement")
+		}
+		if payload.BillingAddress == nil {
+			return nil, errors.New("billing address is required for order placement")
+		}
+	}
+
 	tx := s.database.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -87,6 +102,7 @@ func (s *OrderService) UpdateOrder(id string, payload dto.UpdateOrderDto) (*mode
 	if payload.Notes != nil {
 		updates["notes"] = *payload.Notes
 	}
+
 	if payload.ShippingAddress != nil {
 		updates["shipping_address"] = models.Address{
 			Street:  payload.ShippingAddress.Street,
@@ -96,6 +112,7 @@ func (s *OrderService) UpdateOrder(id string, payload dto.UpdateOrderDto) (*mode
 			Country: payload.ShippingAddress.Country,
 		}
 	}
+
 	if payload.BillingAddress != nil {
 		updates["billing_address"] = models.Address{
 			Street:  payload.BillingAddress.Street,
@@ -339,26 +356,41 @@ func (s *OrderService) buildOrderItems(items []dto.CreateOrderItemDto) ([]models
 }
 
 func (s *OrderService) buildOrderModel(payload dto.CreateOrderDto, items []models.OrderItemModel) models.OrderModel {
-	return models.OrderModel{
-		UserId:   payload.UserId,
+	order := models.OrderModel{
 		Items:    items,
 		Currency: payload.Currency,
-		ShippingAddress: models.Address{
+		Status:   "draft",
+	}
+
+	if payload.UserId != nil {
+		order.UserId = *payload.UserId
+	}
+
+	if payload.ShippingAddress != nil {
+		order.ShippingAddress = models.Address{
 			Street:  payload.ShippingAddress.Street,
 			City:    payload.ShippingAddress.City,
 			State:   payload.ShippingAddress.State,
 			ZipCode: payload.ShippingAddress.ZipCode,
 			Country: payload.ShippingAddress.Country,
-		},
-		BillingAddress: models.Address{
+		}
+	}
+
+	if payload.BillingAddress != nil {
+		order.BillingAddress = models.Address{
 			Street:  payload.BillingAddress.Street,
 			City:    payload.BillingAddress.City,
 			State:   payload.BillingAddress.State,
 			ZipCode: payload.BillingAddress.ZipCode,
 			Country: payload.BillingAddress.Country,
-		},
-		Notes: payload.Notes,
+		}
 	}
+
+	if payload.Notes != nil {
+		order.Notes = *payload.Notes
+	}
+
+	return order
 }
 
 func (s *OrderService) updateOrderItems(tx *gorm.DB, orderId string, items []dto.UpdateOrderItemDto) error {

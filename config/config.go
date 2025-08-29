@@ -104,6 +104,8 @@ func InitializeConfig() {
 			{Endpoint: "/api/v1/products", Method: http.MethodGet},
 			{Endpoint: "/api/v1/products/:id", Method: http.MethodGet},
 			{Endpoint: "/api/v1/users/:id", Method: http.MethodGet},
+			{Endpoint: "/api/v1/orders", Method: http.MethodPost},
+			{Endpoint: "/api/v1/orders/:id", Method: http.MethodPut},
 		},
 		AdminRoutes: []ApiRoute{
 			{Endpoint: "/api/v1/products", Method: http.MethodPost},
